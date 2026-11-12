@@ -1,0 +1,12 @@
+name: opencode-accounts
+label: OpenCode Accounts
+kind: standalone
+version: 1.0.0
+author: Fox
+description: >
+  Switch between several OpenCode accounts without logging out. Each account is
+  one OpenCode Console API key; the active one is used by both built-in Hermes
+  OpenCode providers (opencode-zen and opencode-go). Adds `hermes opencode` and
+  the /opencode slash command. Switching is always manual.
+provides_tools: []
+provides_hooks: []

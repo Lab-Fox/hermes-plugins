@@ -1,0 +1,14 @@
+name: provider-keys
+label: Provider Keys
+kind: standalone
+version: 1.1.0
+author: Fox
+description: >
+  Save several API keys per model provider under labels and choose which one
+  Hermes starts with, for the free-tier providers added by the free-providers
+  plugin and for built-in ones such as NVIDIA and OpenRouter. Hermes moves to
+  the next saved key when one hits its limit (per provider, can be turned off).
+  Adds `hermes keys`, the /keys slash command and a key menu in the Hermes
+  Desktop status bar.
+provides_tools: []
+provides_hooks: []

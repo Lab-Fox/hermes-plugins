@@ -1,0 +1,12 @@
+name: nanogpt-accounts
+label: NanoGPT Accounts
+kind: standalone
+version: 1.0.0
+author: Fox
+description: >
+  Switch between several NanoGPT API keys (for example a subscription key and a
+  Pay As You Go key) without editing files. Adds `hermes nanogpt` and the
+  /nanogpt slash command on top of the nanogpt model provider. Switching is
+  always manual: Hermes never falls over to another key on its own.
+provides_tools: []
+provides_hooks: []

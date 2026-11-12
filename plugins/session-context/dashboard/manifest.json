@@ -1,0 +1,10 @@
+{
+  "name": "session-context",
+  "label": "Session Context",
+  "description": "Token, cost and message details for a chat session (backend for the Desktop Context tab)",
+  "icon": "Activity",
+  "version": "1.0.0",
+  "tab": { "path": "/session-context", "hidden": true },
+  "entry": "dist/index.js",
+  "api": "plugin_api.py"
+}

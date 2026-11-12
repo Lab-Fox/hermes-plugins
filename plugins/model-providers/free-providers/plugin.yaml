@@ -1,0 +1,5 @@
+name: free-providers
+kind: model-provider
+version: 1.0.0
+description: Free-tier model providers (ModelScope, LLM7, OrcaRouter, Groq and more) plus switchable keys for built-in ones (NVIDIA, OpenRouter, ...)
+author: Fox

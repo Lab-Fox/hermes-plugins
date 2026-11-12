@@ -1,0 +1,10 @@
+{
+  "name": "provider-keys",
+  "label": "Provider Keys",
+  "description": "Backend for the Desktop key menu: lists saved keys by label and switches the starting key",
+  "icon": "KeyRound",
+  "version": "1.1.0",
+  "tab": { "path": "/provider-keys", "hidden": true },
+  "entry": "dist/index.js",
+  "api": "plugin_api.py"
+}

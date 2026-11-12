@@ -1,0 +1,5 @@
+name: opencode-accounts-provider
+kind: model-provider
+version: 1.0.0
+description: OpenCode Zen and Go with named Console API keys you switch by hand (built-in profiles, account-aware)
+author: Fox

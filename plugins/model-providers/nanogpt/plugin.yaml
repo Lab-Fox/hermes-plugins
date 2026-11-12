@@ -1,0 +1,5 @@
+name: nanogpt-provider
+kind: model-provider
+version: 2.0.0
+description: NanoGPT — 600+ text models, with named subscription / Pay As You Go keys you switch by hand
+author: Fox

@@ -1,0 +1,13 @@
+name: session-context
+label: Session Context
+kind: standalone
+version: 1.0.0
+author: Fox
+description: >
+  Shows the open chat's token count and cost in Hermes Desktop, and a Context
+  tab with the session's provider, model, token breakdown (input, output,
+  reasoning, cache read/write), cost, message counts, system prompt and raw
+  messages. Reads Hermes's own session database; adds no tools and changes
+  nothing in a chat.
+provides_tools: []
+provides_hooks: []
