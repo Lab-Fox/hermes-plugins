@@ -1,0 +1,73 @@
+name: netcrawler
+label: NetCrawler
+kind: standalone
+version: 1.0.0
+manifest_version: 2
+author: Fox
+license: MIT
+description: >
+  Site crawler and keyless web-research layer. Federated no-key search
+  (DuckDuckGo, Bing, Google News, Yahoo, SearXNG, Marginalia), a curl_cffi ->
+  Patchright escalation ladder that dismisses age gates, consent walls and JS
+  challenges, whole-site crawling with sitemaps and adaptive stopping,
+  CSS/XPath structured extraction, and a local SQLite+FTS5 corpus. Requires no
+  API key, account or paid service.
+provides_tools:
+  - net_search
+  - net_fetch
+  - net_crawl
+  - net_status
+  - net_extract
+  - net_corpus
+config_schema:
+  browser_channel:
+    type: str
+    choices: [chrome, msedge, chromium]
+    default: chrome
+    label: Browser channel
+    description: Installed browser used for the stealth rung. Chrome, then Edge, then bundled Chromium.
+  headless:
+    type: bool
+    default: true
+    label: Headless browser
+  max_pages:
+    type: int
+    default: 40
+    label: Default page cap per crawl
+  max_depth:
+    type: int
+    default: 2
+    label: Default link depth per crawl
+  concurrency:
+    type: int
+    default: 4
+    label: Parallel fetches per crawl
+  request_delay_ms:
+    type: int
+    default: 400
+    label: Per-host delay (ms)
+    description: Minimum spacing between requests to one host. Robots.txt crawl-delay overrides it when larger.
+  respect_robots:
+    type: bool
+    default: true
+    label: Obey robots.txt
+  archive_fallback:
+    type: bool
+    default: false
+    label: Fall back to Wayback snapshots
+    description: Off by default so a stale snapshot is never mistaken for live content.
+  timeout_s:
+    type: int
+    default: 30
+    label: Per-request timeout (s)
+  corpus_max_docs:
+    type: int
+    default: 100000
+    label: Corpus document cap
+    description: Oldest documents are pruned beyond this.
+  proxy:
+    type: str
+    default: ""
+    label: HTTP proxy
+    description: Optional, e.g. http://user:pass@host:port. Applies to HTTP and browser rungs.
+tags: [crawler, scraping, search, anti-bot, research, corpus]

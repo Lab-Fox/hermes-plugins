@@ -1,0 +1,16 @@
+name: resourceful
+label: Resourceful
+kind: standalone
+version: 1.0.0
+author: Fox
+description: >
+  Makes the agent use what it has. Adds standing rules (search the web when stuck,
+  reuse existing libraries, load and combine installed skills), names the installed
+  skills and plugin tools that fit each message, and when a tool fails the same way
+  twice tells the agent to search for the exact error instead of guessing again.
+  Local word matching only: no model calls, no network, nothing stored.
+provides_tools: []
+provides_hooks:
+  - pre_llm_call
+  - transform_tool_result
+  - post_tool_call

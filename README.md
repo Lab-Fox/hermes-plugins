@@ -10,6 +10,9 @@ Built and used on Windows 11 with Hermes Desktop.
 | **OpenCode Accounts** | Named OpenCode Console keys switched by hand, used by both OpenCode Zen and Go | `plugins/opencode-accounts`, `plugins/model-providers/opencode-accounts` |
 | **Session Context** | A tokens-and-cost chip and a Context tab for the open chat: provider, model, token breakdown, cost, message counts, system prompt, raw messages | `plugins/session-context` |
 | **Word Suggest** | Word completion at the cursor, spelling fixes on right-click and learning of your own terms, in the Desktop message box | `desktop-plugins/word-suggest` |
+| **Resourceful** | Gets the agent to use what it has: names the installed skills, tools and connectors that fit each message, and suggests a web search when it keeps failing the same way | `plugins/resourceful` |
+| **NetCrawler** | Keyless web search across several engines, a fetch ladder that falls back to a real browser for pages that need it, site crawling, structured extraction and a local searchable corpus | `plugins/netcrawler` |
+| **NanoGPT Image** | Image generation and image-to-image through NanoGPT's image API | `plugins/nanogpt-image` |
 
 ## Install
 
@@ -29,8 +32,14 @@ hermes plugins enable provider-keys
 hermes plugins enable session-context
 hermes plugins enable nanogpt-accounts
 hermes plugins enable opencode-accounts
+hermes plugins enable resourceful
+hermes plugins enable netcrawler
+hermes plugins enable nanogpt-image
 hermes gateway restart
 ```
+
+NetCrawler needs the Python packages listed in `plugins/netcrawler/pyproject.toml` (curl_cffi,
+trafilatura, Patchright and a few more). `hermes plugins doctor netcrawler` checks that it imports.
 
 The folders under `plugins/model-providers/` need no enabling: Hermes finds them at start.
 Desktop parts start switched off. Turn them on in Hermes Desktop under **Capabilities → Plugins**
@@ -104,6 +113,40 @@ only; whether one works depends on Windows.
 To change the plugin, edit the files in `desktop-plugins/word-suggest/src/` and run
 `python src/build.py`, which writes `plugin.js`.
 
+## Resourceful
+
+Models often grind on a problem that a quick search or an installed skill would solve, and miss
+tools that Hermes keeps behind `tool_search`. This plugin works at three points:
+
+- **Standing rules** in each new chat's instructions: search when stuck, reuse existing libraries,
+  check and combine installed skills and tools, look behind `tool_search`.
+- **Per message:** names the installed skills and tools that match what you asked, points at
+  connectors when you name an app (GitHub, Gmail, Notion page, ...), and suggests searching when the
+  message carries a pasted error or a "how do I / is there a library" question.
+- **When stuck:** after the same failure twice, adds a note to that tool result suggesting a search
+  for the exact error.
+
+It stays quiet for refusals (commands you denied, guard blocks, pending approvals), Hermes timeouts,
+expected non-zero exits (`grep` with no match, `diff`) and ordinary failing tests. Error text copied
+into a note is cleaned so it cannot carry instructions. Matching is local: no model calls, no
+network, nothing stored. The rules section applies from the next new chat after enabling.
+
+## NetCrawler
+
+Tools: `net_search`, `net_fetch`, `net_crawl`, `net_extract`, `net_corpus`, `net_status`. Search
+needs no API key. Fetching starts with a fast HTTP request and moves to a real browser (an installed
+Chrome or Edge, via Patchright) when a page needs JavaScript or shows a consent or age gate. It
+follows robots.txt and keeps a per-site delay by default (both in the plugin settings). Respect each
+site's terms of use.
+
+## NanoGPT Image
+
+Set `NANOGPT_API_KEY` (or a separate `NANOGPT_IMAGE_API_KEY`, so images can use a subscription's
+image quota) and choose `nanogpt` as the image provider (`hermes tools`). The model comes from
+`NANOGPT_IMAGE_MODEL` or `image_gen.model`; any NanoGPT image model id works. It uses a helper
+module inside Hermes (`plugins.image_gen._common`) that is not part of the published plugin API, so
+a Hermes update could require a change.
+
 ## Tests
 
 ```bash
@@ -111,6 +154,8 @@ cd plugins/provider-keys     && python -m unittest discover -s tests
 cd plugins/nanogpt-accounts  && python -m unittest discover -s tests
 cd plugins/opencode-accounts && python -m unittest discover -s tests
 cd desktop-plugins/word-suggest && node --test src/
+cd plugins/resourceful       && python -m unittest discover -s tests
+cd plugins/netcrawler        && python -m pytest tests/test_core.py
 ```
 
 `plugins/session-context/tests` runs only from an installed copy, with Hermes's own Python environment (it needs FastAPI and `hermes_state`).

@@ -1,0 +1,7 @@
+name: nanogpt-image
+version: 1.0.0
+description: "NanoGPT image generation backend — text-to-image and image-to-image through NanoGPT's normalized Image API (Nano Banana, GPT Image, FLUX, Seedream, Qwen Image, Krea, Recraft …)."
+author: Fox
+kind: backend
+requires_env:
+  - NANOGPT_API_KEY

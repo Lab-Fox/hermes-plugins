@@ -1,0 +1,14 @@
+[project]
+name = "hermes-plugin-netcrawler"
+version = "1.0.0"
+description = "NetCrawler — site crawler and keyless web-research layer for Hermes"
+requires-python = ">=3.11"
+dependencies = [
+    "curl_cffi>=0.13,<0.21",
+    "lxml>=5.2,<7",
+    "trafilatura>=2.0,<3",
+    "markdownify>=1.0,<2",
+    "selectolax>=0.3,<2",
+    "patchright>=1.50,<2",
+    "pypdf>=5,<8",
+]
