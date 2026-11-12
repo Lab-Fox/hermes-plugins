@@ -1,0 +1,15 @@
+name: publish-guard
+label: Publish Guard
+kind: standalone
+version: 1.0.0
+author: Fox
+description: >
+  Checks what is about to leave this PC before Hermes publishes it. Before a git push,
+  gh repo/release/gist create, a package publish or a GitHub/GitLab tool call that writes
+  content, it scans exactly what would be sent for your real keys, anything that looks like a
+  credential, credential files, your user-folder paths, email, computer name and key labels,
+  and commit authors using your real email. Findings block the command; making something
+  public asks for approval. Adds `hermes publish-guard scan|allow|list|forget`. Local only.
+provides_tools: []
+provides_hooks:
+  - pre_tool_call

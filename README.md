@@ -13,6 +13,7 @@ Built and used on Windows 11 with Hermes Desktop.
 | **Resourceful** | Gets the agent to use what it has: names the installed skills, tools and connectors that fit each message, and suggests a web search when it keeps failing the same way | `plugins/resourceful` |
 | **NetCrawler** | Keyless web search across several engines, a fetch ladder that falls back to a real browser for pages that need it, site crawling, structured extraction and a local searchable corpus | `plugins/netcrawler` |
 | **NanoGPT Image** | Image generation and image-to-image through NanoGPT's image API | `plugins/nanogpt-image` |
+| **Publish Guard** | Checks what is about to leave your PC before the agent pushes or publishes it: your real keys, credentials, private files and personal details block it; making something public asks you first | `plugins/publish-guard` |
 
 ## Install
 
@@ -35,6 +36,7 @@ hermes plugins enable opencode-accounts
 hermes plugins enable resourceful
 hermes plugins enable netcrawler
 hermes plugins enable nanogpt-image
+hermes plugins enable publish-guard
 hermes gateway restart
 ```
 
@@ -147,6 +149,54 @@ image quota) and choose `nanogpt` as the image provider (`hermes tools`). The mo
 module inside Hermes (`plugins.image_gen._common`) that is not part of the published plugin API, so
 a Hermes update could require a change.
 
+## Publish Guard
+
+Runs before the agent publishes anything: `git push` (also inside `bash -c`, PowerShell, `cmd /c`, git
+aliases and scripts it can read), `gh repo create` / `repo edit --visibility public` / `release` / `gist` /
+`issue` / `pr` / `api`, uploads to GitHub or GitLab APIs with curl or Invoke-RestMethod, package publishes
+(npm, pnpm, yarn, cargo, twine, poetry, uv, gem, nuget) and GitHub/GitLab MCP or connector write tools.
+
+It scans exactly what would be sent (the commits the destination lacks, including merges, commit and tag
+messages, and files deleted in later commits; release assets; package contents and archives) for:
+
+- the real values of the keys in your Hermes `.env`, compared in memory and never shown;
+- hard-coded credentials, private keys, and anything Hermes's own redactor recognises;
+- credential files: `.env`, `auth.json`, private keys, Hermes's session database, key stores;
+- personal details: paths inside your user folder, your email, your computer's name, your key labels;
+- commit authors using your real email instead of GitHub's no-reply address.
+
+Findings block the command, with masked file:line locations. Making something public goes through
+Hermes's approval prompt. What it cannot see (stdin, a scan that runs out of time) blocks rather than
+passes. Everything runs locally.
+
+```bash
+hermes publish-guard scan [path]        # check a repository's whole history yourself
+hermes publish-guard scan --remote origin   # only what origin does not have yet
+hermes publish-guard allow <id>         # allow one false positive (asks you to confirm)
+hermes publish-guard list               # allowed findings
+hermes publish-guard forget <id>|--all
+```
+
+Only you can allow a finding: the plugin blocks the agent from running `allow`, editing its records or
+disabling it. A clean whole-history `scan` from your own terminal lets a repository that is too large for
+the in-chat check be pushed, until any commit changes.
+
+Add emails or words to protect in `config.yaml`:
+
+```yaml
+plugins:
+  entries:
+    publish-guard:
+      settings:
+        emails: ["you@example.com"]     # also read from git config user.email
+        extra_terms: ["my-project-codename"]
+        ignore_terms: ["a-label-that-is-not-private"]
+```
+
+Limits: it guards what the agent runs through Hermes, not pushes you make from your own terminal or an
+editor (run `hermes publish-guard scan` first for those). The agent runs as your user, so a determined
+workaround could still write the plugin's files; the plugin closes the obvious routes, not every route.
+
 ## Tests
 
 ```bash
@@ -156,6 +206,7 @@ cd plugins/opencode-accounts && python -m unittest discover -s tests
 cd desktop-plugins/word-suggest && node --test src/
 cd plugins/resourceful       && python -m unittest discover -s tests
 cd plugins/netcrawler        && python -m pytest tests/test_core.py
+cd plugins/publish-guard     && python -m unittest discover -s tests   # with Hermes's Python, for its redactor
 ```
 
 `plugins/session-context/tests` runs only from an installed copy, with Hermes's own Python environment (it needs FastAPI and `hermes_state`).
